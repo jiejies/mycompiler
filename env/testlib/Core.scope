@@ -1,0 +1,10 @@
+import "Other";
+
+func str getHelloWorld() {
+	ret "Hello, World!";
+}
+
+func void printHelloWorld() {
+	print(getHelloWorld());
+	printNewLine();
+}

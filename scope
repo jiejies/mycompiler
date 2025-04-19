@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd env
+java -jar ../target/scopelang-1.0-jar-with-dependencies.jar $@
