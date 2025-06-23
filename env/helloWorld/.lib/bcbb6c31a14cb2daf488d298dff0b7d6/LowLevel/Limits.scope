@@ -1,0 +1,10 @@
+namespace LowLevel;
+
+/%
+The minimum value for a variable with the type of `int`.
+%/
+const int INT_MIN = -9'223'372'036'854'775'808;
+/%
+The maximum value for a variable with the type of `int`.
+%/
+const int INT_MAX = 9'223'372'036'854'775'807;

@@ -1,0 +1,57 @@
+namespace Math;
+
+/%
+@unoptimized: This functions is slow for large values.
+@complexity: O(sqrt(@"n"))
+
+Returns whether or not @"n" is prime.
+%/
+func bool isPrime(int n) {
+	// If the number is less than 2, it is not prime
+	if (n < 2) {
+		ret false;
+	}
+	
+	// Starting at 2 and while i <= sqrt(n) (or i * i <= n)
+	int i = 2;
+	while (i * i <= n) {
+		// If n is divisible by i, than it is not prime
+		if (n % i == 0) {
+			ret false;
+		}
+
+		i += 1;
+	}
+	
+	// If the loop passed without returning, it is a prime
+	ret true;
+}
+
+/%
+@unoptimized: This functions is slow for large values.
+@complexity: O(sqrt(@"n"))
+
+Returns whether or not @"n" is composite.
+%/
+func bool isComposite(int n) {
+	ret !isPrime(n);
+}
+
+/%
+Returns the greatest common divisor/factor (a.k.a. GCD, HCD, GCF, HCF) of @"a" and @"b".
+%/
+func int gcd(int a, int b) {
+	if (b == 0) {
+		ret a;
+	}
+	
+	ret gcd(b, a % b);
+}
+
+/%
+Returns the least/lowest common multiple (a.k.a. LCM, SCM) of @"a" and @"b".
+%/
+func int lcm(int a, int b) {
+	// Remember, gcd(a, b) * lcm(a, b) = a * b
+	ret a / gcd(a, b) * b;
+}

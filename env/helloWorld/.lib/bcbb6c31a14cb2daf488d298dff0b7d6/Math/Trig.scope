@@ -1,0 +1,143 @@
+// TODO: Switch to COS taylor expansion for simplicity
+
+import "Math/Core";
+
+namespace Math;
+
+/%
+The result of @"PI" / 180. 
+%/
+const dec DEG_TO_RAD = 0.017453292519943;
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the sine of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `0.0`.
+%/
+func dec sin(dec x) {
+	// Special cases
+	
+	if (x == infinity) {
+		ret infinity;
+	}
+	
+	if (x == -infinity) {
+		ret -infinity;
+	}
+	
+	// The Taylor series below is only accurate between -3 and 3.
+	// Transform x to fit in the range.
+	// Since sine is a periodic function, we can just keep x between
+	// -PI and PI.
+	
+	while (x > PI) {
+		x -= 2.0 * PI;
+	}
+	
+	while (x < 0.0 - PI) {
+		x += 2.0 * PI;
+	}
+	
+	// More special cases
+	
+	if (x == 0.0) {
+		ret 0.0;
+	}
+	
+	// Taylor series
+	
+	
+	// sin(x) = (x^1 / 1!) - (x^3 / 3!) + (x^5 / 5!) - (x^7 / 7!)
+	dec seriesSum = 0.0;
+	int factorial = 1;
+	for (int k : 4..24 step 4) {
+		if (k != 4) {
+			factorial *= (k - 4) * (k - 3);
+		}
+		seriesSum += powInt(x, k - 3) / factorial -> dec;
+		
+		factorial *= (k - 2) * (k - 1);
+		seriesSum -= powInt(x, k - 1) / factorial -> dec;
+	}
+	
+	// Finally, return
+	
+	ret seriesSum;
+}
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the cosine of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `-1.0`.
+%/
+func dec cos(dec x) {
+	ret sin(x + PI / 2.0);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the tanget of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `0.0`.
+%/
+func dec tan(dec x) {	
+	ret sin(x) / cos(x);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the cosecant of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `0.0`.
+%/
+func dec csc(dec x) {
+	ret 1.0 / sin(x);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the secant of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `0.0`.
+%/
+func dec sec(dec x) {
+	ret 1.0 / cos(x);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of sine. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the cotangent of @"x" (in radians).
+
+Please note that an input of @"PI" **will not** return *exactly* `0.0`.
+%/
+func dec cot(dec x) {
+	ret 1.0 / tan(x);
+}
+
+/%
+Returns @"degrees" converted into radians.
+%/
+func dec degToRad(dec degrees) {
+	ret degrees * DEG_TO_RAD;
+}
+
+/%
+Returns @"radians" converted into degrees.
+%/
+func dec radToDeg(dec radians) {
+	ret radians / DEG_TO_RAD;
+}

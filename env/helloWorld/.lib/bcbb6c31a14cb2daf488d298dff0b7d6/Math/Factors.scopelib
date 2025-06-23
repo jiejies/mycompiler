@@ -1,0 +1,158 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,105cd6e9bb2949a963f5d943c868b9b5,Math/Factors.scope
+
+;@SEG_CODE
+;@FUNC,Math$isPrime,bool,int
+f_Math$isPrime:
+	fstart 16
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 2
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	cmp rdi, rsi
+	setl al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD 2
+	vlist_set 1
+	jmp .l2
+	.l1:
+		mov rdi, QWORD 0
+		push rdi
+		vlist_get rdi, 1
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		mov rax, rdi
+		cqo
+		idiv rsi
+		mov rdi, rdx
+		pop rsi
+		cmp rdi, rsi
+		sete al
+		movzx rdi, al
+		cmp rdi, 0
+		je .l4
+			mov rdi, QWORD 0
+			freturn
+			ret
+		.l4:
+		mov rdi, QWORD 1
+		push rdi
+		vlist_get rdi, 1
+		pop rsi
+		add rdi, rsi
+		vlist_set 1
+	.l2:
+		vlist_get rdi, 0
+		push rdi
+		vlist_get rdi, 1
+		push rdi
+		vlist_get rdi, 1
+		pop rsi
+		imul rdi, rsi
+		pop rsi
+		cmp rdi, rsi
+		setle al
+		movzx rdi, al
+		cmp rdi, 1
+		je .l1
+	.l3:
+	mov rdi, QWORD 1
+	freturn
+	ret
+
+;@FUNC,Math$isComposite,bool,int
+f_Math$isComposite:
+	fstart 16
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_Math$isPrime
+	xor rdi, 1
+	freturn
+	ret
+
+;@FUNC,Math$gcd,int,int,int
+f_Math$gcd:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	mov rdi, QWORD 0
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		vlist_get rdi, 0
+		freturn
+		ret
+	.l0:
+	vlist_get rdi, 1
+	vlist_set 2
+	push rax
+	vlist_get rdi, 1
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	mov rax, rdi
+	cqo
+	idiv rsi
+	mov rdi, rdx
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_Math$gcd
+	freturn
+	ret
+
+;@FUNC,Math$lcm,int,int,int
+f_Math$lcm:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	vlist_get rdi, 1
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 2
+	push rax
+	vlist_get rdi, 1
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_Math$gcd
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	mov rax, rdi
+	cqo
+	idiv rsi
+	mov rdi, rax
+	pop rsi
+	imul rdi, rsi
+	freturn
+	ret
+
+;@SEG_READ
+
+

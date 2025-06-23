@@ -1,0 +1,255 @@
+namespace Math;
+
+/%
+The ratio of a circle's circumference to its diameter.
+%/
+const dec PI = 3.141592653589793;
+/%
+Euler's number. The base of the natural log.
+%/
+const dec E = 2.718281828459045;
+/%
+The result of @"log10" of @"E".
+%/
+const dec LOG10_E = 0.434294481903251;
+
+/%
+@approx: This function uses the @"pow" function to compute the answer. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the square root of @"radicant".
+
+Use @"root" if you want an arbitrary index.
+%/
+func dec sqrt(dec radicant) {
+	ret pow(radicant, 0.5);
+}
+
+/%
+@approx: This function uses the @"pow" function to compute the answer. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the @"index"th root of @"radicant".
+
+Use @"sqrt" for an index of `2`.
+%/
+func dec root(dec index, dec radicant) {
+	ret pow(radicant, 1.0 / index);
+}
+
+/%
+@complexity: O(log(@"exponent"))
+
+Computes the power of @"base" (decimal) to @"exponent" (integer).
+%/
+func dec powInt(dec base, int exponent) { 
+	// Special cases
+	
+	if (exponent == 0) {
+		ret 1.0;
+	}
+	
+	if (exponent == 1) {
+		ret base;
+	}
+	
+	if (exponent == 2) {
+		ret base * base;
+	}
+	
+	if (base == 1.0) {
+		ret 1.0;
+	}
+	
+	// Divide and conquer!
+	
+	// This is basically just an optimized 
+	// version of the naive "repeated multiplication"
+	
+	dec i = powInt(base, exponent / 2);
+	if (exponent % 2 == 0) {
+		ret i * i;
+	} else {
+		if (exponent > 0) { // If positive
+			ret i * i * base;
+		} else { // If negative
+			ret i * i / base;
+		}
+	}
+}
+
+/%
+@approx: This function could have some inaccuracies at higher values.
+	Use @"powInt" if the @"exponent" is an integer for a more accurate result.
+@todo: Add support for negative bases.
+
+Computes @"base" ^ @"exponent".
+%/
+func dec pow(dec base, dec exponent) {
+	// log10(base ^ exponent) = log10(base) * exponent 
+	
+	if (base < 0.0) {
+		ret nan;
+	}
+	
+	ret exp(ln(base) * exponent);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of log10. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the log (base 10) of @"x".
+%/
+func dec log10(dec x) {
+	// Special cases
+	
+	if (x < 0.0) {
+		// TODO: prevent x < 0.0
+		ret nan;
+	}
+	
+	if (x == 0.0) {
+		ret -infinity;
+	}
+	
+	if (x == 1.0) {
+		ret 0.0;
+	}
+
+	if (x == 10.0) {
+		ret 1.0;
+	}
+	
+	if (x == infinity) {
+		ret infinity;
+	}
+	
+	// The Taylor series below only works between 0 and 1.
+	// Transform x to fit in the range with a summand (b).
+	// log10(x : 0..inf) = log10(x : 0..=1) + b
+	
+	// Get "b"
+	
+	dec b = 0.0;
+	while (x >= 1.0) {
+		x /= 10.0;
+		b += 1.0;
+	}
+	
+	// sqrt(1/10) = 0.316227766016837
+	while(x <= 0.316227766016837) {
+		x *= 10.0;
+		b -= 1.0;
+	}
+	
+	// Taylor series (for seriesSum)
+	
+	dec z = (x - 1.0) / (x + 1.0);
+	
+	// ln(z) = 2 * (z + (z^3 / 3) + (z^5 / 5) + ...)
+	dec seriesSum = z;
+	for (int k : 3..23 step 2) {
+		seriesSum += powInt(z, k) / k -> dec;
+	}
+	seriesSum *= 2.0;
+	
+	// Finally, return
+	// log10(x) = ln(x) * log10(e) + b
+	
+	ret seriesSum * LOG10_E + b;
+}
+
+/%
+@approx: This function uses the Taylor series expansion of log10. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the natural log (log base e) of @"x".
+%/
+func dec ln(dec x) {
+	// ln(x) = log10(x) / log10(e)
+	ret log10(x) / LOG10_E;
+}
+
+/%
+@approx: This function uses the Taylor series expansion of log10. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes the log of @"x" with an arbitrary base, @"base".
+
+Use @"log10" for a base of `10`.
+Use @"ln" for a base of `e`.
+%/
+func dec log(dec x, dec base) {
+	if (base <= 0.0) {
+		// TODO: prevent x <= 0.0
+		ret nan;
+	}
+	
+	// log_base(x) = log10(x) / log10(base)
+	ret log10(x) / log10(base);
+}
+
+/%
+@approx: This function uses the Taylor series expansion of exp. This function
+	is not 100% accurate but will provide a very good approximation.
+
+Computes e ^ @"x" or exp(@"x").
+%/
+func dec exp(dec x) {
+	// Special cases
+	
+	if (x == -infinity) {
+		ret 0.0;
+	}
+	
+	if (x == 0.0) {
+		ret 1.0;
+	}
+	
+	if (x == infinity) {
+		ret infinity;
+	}
+	
+	// Deal with negatives later (see below)
+	
+	bool neg = x < 0.0;
+	if (neg) {
+		x = -x;
+	}
+	
+	// The Taylor series below is only accurate between -2 and 2.
+	// Transform x to fit in the range.
+	// e ^ 8.2 = e^3.2 * e^6.0
+	// Note that the exponent in the second power is an integer
+	// which we can compute already. Let b be the second power.
+	// This does not work if x is negative. We can deal with that
+	// by doing `1.0 / result` at the end.
+	
+	// Get "b"
+	
+	dec b = 1.0;
+	while (x > 2.0) {
+		x -= 1.0;
+		b *= E;
+	}
+	
+	// Taylor series (for seriesSum)
+	
+	// exp(x) = (x^0 / 0!) + (x^1 / 1!) + (x^2 / 2!) + ...
+	dec seriesSum = 1.0;
+	int factorial = 1;
+	for (int k : 1..23) {
+		factorial *= k;
+		seriesSum += powInt(x, k) / factorial -> dec;
+	}
+	
+	// Finally, return
+	
+	dec result = seriesSum * b;
+	if (neg) {
+		ret 1.0 / result;
+	} else {
+		ret result;
+	}
+}

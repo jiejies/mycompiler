@@ -1,0 +1,526 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,20b6f3e4d712bb51f2ea7124efdc2d40,Core.scope
+;@IMPORT,fa89cc783311f041f47b82342e0e786c,LowLevel/Floats.scope
+;@IMPORT,0e88560449be6fbdd7da2d39ec0bdc33,LowLevel/Limits.scope
+;@IMPORT,1fbde2d14dc618011d6d1fcf5cd08b65,Math/Rounding.scope
+;@IMPORT,4783e61e7d9331d2d938df9e1ee6bdc7,Math/Core.scope
+
+;@SEG_CODE
+;@FUNC,println,void,str
+f_println:
+	fstart 8
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	call print
+	lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_0]
+	call print
+	freturn
+	ret
+
+;@FUNC,input,str
+f_input:
+	fstart 8
+	lea rdi, [s_empty]
+	vlist_set 0
+	;@ASM_START
+	call input
+	vlist_set 0
+	;@ASM_END
+	vlist_get rdi, 0
+	freturn
+	ret
+
+;@FUNC,sleep,void,dec
+f_sleep:
+	fstart 40
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	setnb al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD [c_LowLevel$INT_MAX]
+	mov QWORD [fptmp], rdi
+	cvtsi2sd xmm0, QWORD [fptmp]
+	movq rdi, xmm0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm0, xmm1
+	seta al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l1
+		mov rdi, QWORD [c_LowLevel$INT_MAX]
+		mov QWORD [fptmp], rdi
+		cvtsi2sd xmm0, QWORD [fptmp]
+		movq rdi, xmm0
+		vlist_set 0
+	.l1:
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_Math$floor
+	vlist_set 2
+	vlist_get rdi, 2
+	movq xmm0, rdi
+	cvttsd2si rdi, xmm0
+	vlist_set 3
+	mov rdi, QWORD 1000000000.0
+	push rdi
+	vlist_get rdi, 2
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	subsd xmm0, xmm1
+	movq rdi, xmm0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	mulsd xmm0, xmm1
+	movq rdi, xmm0
+	movq xmm0, rdi
+	cvttsd2si rdi, xmm0
+	vlist_set 4
+	;@ASM_START
+	vlist_get rdi, 3
+	vlist_get rsi, 4
+	call sleep
+	;@ASM_END
+	freturn
+	ret
+
+;@FUNC,boolToStr,str,bool
+f_boolToStr:
+	fstart 8
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	cmp rdi, 0
+	je .l0
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_1]
+		freturn
+		ret
+	.l0:
+	lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_2]
+	freturn
+	ret
+
+;@FUNC,intToStr,str,int
+f_intToStr:
+	fstart 24
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_3]
+		freturn
+		ret
+	.l0:
+	lea rdi, [s_empty]
+	vlist_set 1
+	mov rdi, QWORD 0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	cmp rdi, rsi
+	setl al
+	movzx rdi, al
+	vlist_set 2
+	vlist_get rdi, 2
+	cmp rdi, 0
+	je .l1
+		vlist_get rdi, 0
+		neg rdi
+		vlist_set 0
+	.l1:
+	jmp .l3
+	.l2:
+		vlist_get rdi, 1
+		push rdi
+		mov rdi, QWORD 10
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		mov rax, rdi
+		cqo
+		idiv rsi
+		mov rdi, rdx
+		push rdi
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_4]
+		pop rsi
+		add rdi, rsi
+		mov al, BYTE [rdi + 16]
+		mov rdi, QWORD [curpkg]
+		mov QWORD [rdi], 1
+		mov BYTE [rdi + 16], al
+		add QWORD [curpkg], 17
+		pop rsi
+		call concat
+		vlist_set 1
+		mov rdi, QWORD 10
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		mov rax, rdi
+		cqo
+		idiv rsi
+		mov rdi, rax
+		vlist_set 0
+	.l3:
+		mov rdi, QWORD 0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		cmp rdi, rsi
+		setg al
+		movzx rdi, al
+		cmp rdi, 1
+		je .l2
+	.l4:
+	vlist_get rdi, 2
+	cmp rdi, 0
+	je .l5
+		vlist_get rdi, 1
+		push rdi
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_5]
+		pop rsi
+		call concat
+		vlist_set 1
+	.l5:
+	vlist_get rdi, 1
+	freturn
+	ret
+
+;@FUNC,decToStr,str,dec
+f_decToStr:
+	fstart 184
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_6]
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD 0x7FF0000000000000
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l1
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_7]
+		freturn
+		ret
+	.l1:
+	mov rdi, QWORD 0xFFF0000000000000
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l2
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_8]
+		freturn
+		ret
+	.l2:
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	seta al
+	movzx rdi, al
+	vlist_set 1
+	vlist_get rdi, 1
+	cmp rdi, 0
+	je .l3
+		vlist_get rdi, 0
+		xorpd xmm0, xmm0
+		movq xmm1, rdi
+		subsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 0
+	.l3:
+	mov rdi, QWORD 1023
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 2
+	push rax
+	pop rdx
+	call f_LowLevel$exponentPart
+	pop rsi
+	sub rdi, rsi
+	vlist_set 3
+	lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_9]
+	vlist_set 4
+	mov rdi, QWORD -21
+	push rdi
+	vlist_get rdi, 3
+	pop rsi
+	cmp rdi, rsi
+	setg al
+	movzx rdi, al
+	push rdi
+	mov rdi, QWORD 39
+	push rdi
+	vlist_get rdi, 3
+	pop rsi
+	cmp rdi, rsi
+	setl al
+	movzx rdi, al
+	pop rsi
+	and rdi, rsi
+	cmp rdi, 0
+	je .l4
+		vlist_get rdi, 0
+		vlist_set 5
+		push rax
+		pop rdx
+		call f_Math$floor
+		vlist_set 6
+		vlist_get rdi, 6
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		subsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 7
+		vlist_get rdi, 6
+		movq xmm0, rdi
+		cvttsd2si rdi, xmm0
+		vlist_set 8
+		push rax
+		pop rdx
+		call f_intToStr
+		vlist_set 9
+		mov rdi, QWORD 1000000.0
+		push rdi
+		vlist_get rdi, 7
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		mulsd xmm0, xmm1
+		movq rdi, xmm0
+		movq xmm0, rdi
+		cvttsd2si rdi, xmm0
+		vlist_set 10
+		push rax
+		pop rdx
+		call f_intToStr
+		vlist_set 11
+		jmp .l6
+		.l5:
+			vlist_get rdi, 11
+			push rdi
+			lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_3]
+			pop rsi
+			call concat
+			vlist_set 11
+		.l6:
+			mov rdi, QWORD 6
+			push rdi
+			vlist_get rdi, 11
+			mov rdi, QWORD [rdi]
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 1
+			je .l5
+		.l7:
+		vlist_get rdi, 11
+		push rdi
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_10]
+		push rdi
+		vlist_get rdi, 9
+		pop rsi
+		call concat
+		pop rsi
+		call concat
+		vlist_set 4
+		jmp .l8
+	.l4:
+		mov rdi, QWORD 1024
+		push rdi
+		vlist_get rdi, 3
+		pop rsi
+		cmp rdi, rsi
+		setne al
+		movzx rdi, al
+		cmp rdi, 0
+		je .l9
+			vlist_get rdi, 0
+			vlist_set 12
+			push rax
+			pop rdx
+			call f_LowLevel$mantissaPartAsDec
+			vlist_set 13
+			mov rdi, QWORD 0.0000000000001
+			push rdi
+			mov rdi, QWORD 0.301029995663981
+			push rdi
+			vlist_get rdi, 3
+			mov QWORD [fptmp], rdi
+			cvtsi2sd xmm0, QWORD [fptmp]
+			movq rdi, xmm0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			mulsd xmm0, xmm1
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 13
+			vlist_set 14
+			push rax
+			pop rdx
+			call f_Math$log10
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			addsd xmm0, xmm1
+			movq rdi, xmm0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			addsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 15
+			vlist_get rdi, 15
+			vlist_set 16
+			push rax
+			pop rdx
+			call f_Math$floor
+			vlist_set 17
+			mov rdi, QWORD 10.0
+			vlist_set 18
+			push rax
+			vlist_get rdi, 17
+			push rdi
+			vlist_get rdi, 15
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			subsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 19
+			push rax
+			pop rcx
+			pop rdx
+			call f_Math$pow
+			vlist_set 20
+			vlist_get rdi, 17
+			movq xmm0, rdi
+			cvttsd2si rdi, xmm0
+			vlist_set 21
+			push rax
+			pop rdx
+			call f_intToStr
+			push rdi
+			lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_11]
+			push rdi
+			vlist_get rdi, 20
+			vlist_set 22
+			push rax
+			pop rdx
+			call f_decToStr
+			pop rsi
+			call concat
+			pop rsi
+			call concat
+			vlist_set 4
+		.l9:
+	.l8:
+	vlist_get rdi, 1
+	cmp rdi, 0
+	je .l10
+		vlist_get rdi, 4
+		push rdi
+		lea rdi, [s_20b6f3e4d712bb51f2ea7124efdc2d40_5]
+		pop rsi
+		call concat
+		vlist_set 4
+	.l10:
+	vlist_get rdi, 4
+	freturn
+	ret
+
+;@SEG_READ
+
+s_20b6f3e4d712bb51f2ea7124efdc2d40_4 dq 10, 0
+	db 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
+s_20b6f3e4d712bb51f2ea7124efdc2d40_7 dq 8, 0
+	db 105, 110, 102, 105, 110, 105, 116, 121
+s_20b6f3e4d712bb51f2ea7124efdc2d40_3 dq 1, 0
+	db 48
+s_20b6f3e4d712bb51f2ea7124efdc2d40_10 dq 1, 0
+	db 46
+s_20b6f3e4d712bb51f2ea7124efdc2d40_5 dq 1, 0
+	db 45
+s_20b6f3e4d712bb51f2ea7124efdc2d40_6 dq 3, 0
+	db 48, 46, 48
+s_20b6f3e4d712bb51f2ea7124efdc2d40_2 dq 5, 0
+	db 102, 97, 108, 115, 101
+s_20b6f3e4d712bb51f2ea7124efdc2d40_11 dq 8, 0
+	db 32, 42, 32, 49, 48, 32, 94, 32
+s_20b6f3e4d712bb51f2ea7124efdc2d40_8 dq 9, 0
+	db 45, 105, 110, 102, 105, 110, 105, 116, 121
+s_20b6f3e4d712bb51f2ea7124efdc2d40_9 dq 3, 0
+	db 78, 97, 78
+s_20b6f3e4d712bb51f2ea7124efdc2d40_0 dq 1, 0
+	db 10
+s_20b6f3e4d712bb51f2ea7124efdc2d40_1 dq 4, 0
+	db 116, 114, 117, 101
+

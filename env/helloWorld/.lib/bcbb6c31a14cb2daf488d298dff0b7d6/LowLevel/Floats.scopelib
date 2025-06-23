@@ -1,0 +1,174 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,fa89cc783311f041f47b82342e0e786c,LowLevel/Floats.scope
+;@IMPORT,42a822190ecd2d8d0421af84dd4fcbe0,LowLevel/BitManip.scope
+
+;@SEG_CODE
+;@FUNC,LowLevel$exponentPart,int,dec
+f_LowLevel$exponentPart:
+	fstart 48
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_LowLevel$rawCastDecToInt
+	vlist_set 2
+	push rax
+	mov rdi, QWORD 52
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_LowLevel$shr
+	vlist_set 4
+	push rax
+	mov rdi, QWORD 2047
+	vlist_set 5
+	push rax
+	pop rcx
+	pop rdx
+	call f_LowLevel$and
+	freturn
+	ret
+
+;@FUNC,LowLevel$mantissaPart,int,dec
+f_LowLevel$mantissaPart:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_LowLevel$rawCastDecToInt
+	vlist_set 2
+	push rax
+	mov rdi, QWORD 4503599627370495
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_LowLevel$and
+	freturn
+	ret
+
+;@FUNC,LowLevel$mantissaPartAsDec,dec,dec
+f_LowLevel$mantissaPartAsDec:
+	fstart 88
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_LowLevel$exponentPart
+	vlist_set 2
+	vlist_get rdi, 0
+	vlist_set 3
+	push rax
+	pop rdx
+	call f_LowLevel$mantissaPart
+	vlist_set 4
+	mov rdi, QWORD 0.0
+	vlist_set 5
+	mov rdi, QWORD 1
+	vlist_set 6
+		mov rdi, QWORD 0
+		vlist_set 7
+		jmp .l1
+		.l0:
+			vlist_get rdi, 6
+			mov QWORD [fptmp], rdi
+			cvtsi2sd xmm0, QWORD [fptmp]
+			movq rdi, xmm0
+			push rdi
+			mov rdi, QWORD 1.0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			divsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 8
+			mov rdi, QWORD 2
+			push rdi
+			vlist_get rdi, 6
+			pop rsi
+			imul rdi, rsi
+			vlist_set 6
+			vlist_get rdi, 8
+			push rdi
+			vlist_get rdi, 7
+			push rdi
+			mov rdi, QWORD 52
+			pop rsi
+			sub rdi, rsi
+			vlist_set 9
+			push rax
+			vlist_get rdi, 4
+			vlist_set 10
+			push rax
+			pop rcx
+			pop rdx
+			call f_LowLevel$nthBit
+			mov QWORD [fptmp], rdi
+			cvtsi2sd xmm0, QWORD [fptmp]
+			movq rdi, xmm0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			mulsd xmm0, xmm1
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 5
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			addsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 5
+		.l3:
+			vlist_get rdi, 7
+			inc rdi
+			vlist_set 7
+		.l1:
+			mov rdi, QWORD 52
+			push rdi
+			vlist_get rdi, 7
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 1
+			je .l0
+		.l2:
+	mov rdi, QWORD 0
+	push rdi
+	vlist_get rdi, 2
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l4
+		vlist_get rdi, 5
+		freturn
+		ret
+		jmp .l5
+	.l4:
+		vlist_get rdi, 5
+		push rdi
+		mov rdi, QWORD 1.0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		addsd xmm0, xmm1
+		movq rdi, xmm0
+		freturn
+		ret
+	.l5:
+
+;@SEG_READ
+
+

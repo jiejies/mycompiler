@@ -1,0 +1,177 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,1fbde2d14dc618011d6d1fcf5cd08b65,Math/Rounding.scope
+;@IMPORT,fa89cc783311f041f47b82342e0e786c,LowLevel/Floats.scope
+
+;@SEG_CODE
+;@FUNC,Math$floor,dec,dec
+f_Math$floor:
+	fstart 144
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_LowLevel$rawCastDecToInt
+	vlist_set 2
+	mov rdi, QWORD 1023
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 3
+	push rax
+	pop rdx
+	call f_LowLevel$exponentPart
+	pop rsi
+	sub rdi, rsi
+	vlist_set 4
+	mov rdi, QWORD 52
+	push rdi
+	vlist_get rdi, 4
+	pop rsi
+	cmp rdi, rsi
+	setl al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0
+		push rdi
+		vlist_get rdi, 4
+		pop rsi
+		cmp rdi, rsi
+		setl al
+		movzx rdi, al
+		cmp rdi, 0
+		je .l1
+			mov rdi, QWORD -1
+			push rdi
+			vlist_get rdi, 2
+			pop rsi
+			cmp rdi, rsi
+			setg al
+			movzx rdi, al
+			cmp rdi, 0
+			je .l2
+				mov rdi, QWORD 0
+				vlist_set 2
+				jmp .l3
+			.l2:
+				mov rdi, QWORD 0
+				push rdi
+				vlist_get rdi, 2
+				vlist_set 5
+				push rax
+				mov rdi, QWORD 9223372036854775807
+				vlist_set 6
+				push rax
+				pop rcx
+				pop rdx
+				call f_LowLevel$and
+				pop rsi
+				cmp rdi, rsi
+				setne al
+				movzx rdi, al
+				cmp rdi, 0
+				je .l4
+					mov rdi, QWORD -4616189618054758400
+					vlist_set 2
+				.l4:
+			.l3:
+			jmp .l5
+		.l1:
+			mov rdi, QWORD 4503599627370495
+			vlist_set 7
+			push rax
+			vlist_get rdi, 4
+			vlist_set 8
+			push rax
+			pop rcx
+			pop rdx
+			call f_LowLevel$shr
+			vlist_set 9
+			mov rdi, QWORD 0
+			push rdi
+			vlist_get rdi, 2
+			vlist_set 10
+			push rax
+			vlist_get rdi, 9
+			vlist_set 11
+			push rax
+			pop rcx
+			pop rdx
+			call f_LowLevel$and
+			pop rsi
+			cmp rdi, rsi
+			sete al
+			movzx rdi, al
+			cmp rdi, 0
+			je .l6
+				vlist_get rdi, 0
+				freturn
+				ret
+			.l6:
+			mov rdi, QWORD 0
+			push rdi
+			vlist_get rdi, 2
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 0
+			je .l7
+				mov rdi, QWORD 4503599627370496
+				vlist_set 12
+				push rax
+				vlist_get rdi, 4
+				vlist_set 13
+				push rax
+				pop rcx
+				pop rdx
+				call f_LowLevel$shr
+				push rdi
+				vlist_get rdi, 2
+				pop rsi
+				add rdi, rsi
+				vlist_set 2
+			.l7:
+			vlist_get rdi, 2
+			vlist_set 14
+			push rax
+			vlist_get rdi, 9
+			vlist_set 15
+			push rax
+			pop rdx
+			call f_LowLevel$not
+			vlist_set 16
+			push rax
+			pop rcx
+			pop rdx
+			call f_LowLevel$and
+			vlist_set 2
+		.l5:
+		vlist_get rdi, 2
+		vlist_set 17
+		push rax
+		pop rdx
+		call f_LowLevel$rawCastIntToDec
+		vlist_set 0
+		jmp .l8
+	.l0:
+		vlist_get rdi, 0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		addsd xmm0, xmm1
+		movq rdi, xmm0
+		freturn
+		ret
+	.l8:
+	vlist_get rdi, 0
+	freturn
+	ret
+
+;@SEG_READ
+
+

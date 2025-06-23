@@ -1,0 +1,775 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,4783e61e7d9331d2d938df9e1ee6bdc7,Math/Core.scope
+
+;@SEG_CODE
+;@FUNC,Math$sqrt,dec,dec
+f_Math$sqrt:
+	fstart 24
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	mov rdi, QWORD 0.5
+	vlist_set 2
+	push rax
+	pop rcx
+	pop rdx
+	call f_Math$pow
+	freturn
+	ret
+
+;@FUNC,Math$root,dec,dec,dec
+f_Math$root:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	vlist_get rdi, 1
+	vlist_set 2
+	push rax
+	vlist_get rdi, 0
+	push rdi
+	mov rdi, QWORD 1.0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	divsd xmm0, xmm1
+	movq rdi, xmm0
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_Math$pow
+	freturn
+	ret
+
+;@FUNC,Math$powInt,dec,dec,int
+f_Math$powInt:
+	fstart 40
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	mov rdi, QWORD 0
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 1.0
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD 1
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l1
+		vlist_get rdi, 0
+		freturn
+		ret
+	.l1:
+	mov rdi, QWORD 2
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l2
+		vlist_get rdi, 0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		mulsd xmm0, xmm1
+		movq rdi, xmm0
+		freturn
+		ret
+	.l2:
+	mov rdi, QWORD 1.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l3
+		mov rdi, QWORD 1.0
+		freturn
+		ret
+	.l3:
+	vlist_get rdi, 0
+	vlist_set 2
+	push rax
+	mov rdi, QWORD 2
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	mov rax, rdi
+	cqo
+	idiv rsi
+	mov rdi, rax
+	vlist_set 3
+	push rax
+	pop rcx
+	pop rdx
+	call f_Math$powInt
+	vlist_set 4
+	mov rdi, QWORD 0
+	push rdi
+	mov rdi, QWORD 2
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	mov rax, rdi
+	cqo
+	idiv rsi
+	mov rdi, rdx
+	pop rsi
+	cmp rdi, rsi
+	sete al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l4
+		vlist_get rdi, 4
+		push rdi
+		vlist_get rdi, 4
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		mulsd xmm0, xmm1
+		movq rdi, xmm0
+		freturn
+		ret
+		jmp .l5
+	.l4:
+		mov rdi, QWORD 0
+		push rdi
+		vlist_get rdi, 1
+		pop rsi
+		cmp rdi, rsi
+		setg al
+		movzx rdi, al
+		cmp rdi, 0
+		je .l6
+			vlist_get rdi, 0
+			push rdi
+			vlist_get rdi, 4
+			push rdi
+			vlist_get rdi, 4
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			mulsd xmm0, xmm1
+			movq rdi, xmm0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			mulsd xmm0, xmm1
+			movq rdi, xmm0
+			freturn
+			ret
+			jmp .l7
+		.l6:
+			vlist_get rdi, 0
+			push rdi
+			vlist_get rdi, 4
+			push rdi
+			vlist_get rdi, 4
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			mulsd xmm0, xmm1
+			movq rdi, xmm0
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			divsd xmm0, xmm1
+			movq rdi, xmm0
+			freturn
+			ret
+		.l7:
+	.l5:
+
+;@FUNC,Math$pow,dec,dec,dec
+f_Math$pow:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	seta al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0xFFF8000000000000
+		freturn
+		ret
+	.l0:
+	vlist_get rdi, 1
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 2
+	push rax
+	pop rdx
+	call f_Math$ln
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	mulsd xmm0, xmm1
+	movq rdi, xmm0
+	vlist_set 3
+	push rax
+	pop rdx
+	call f_Math$exp
+	freturn
+	ret
+
+;@FUNC,Math$log10,dec,dec
+f_Math$log10:
+	fstart 56
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	seta al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0xFFF8000000000000
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l1
+		mov rdi, QWORD 0xFFF0000000000000
+		freturn
+		ret
+	.l1:
+	mov rdi, QWORD 1.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l2
+		mov rdi, QWORD 0.0
+		freturn
+		ret
+	.l2:
+	mov rdi, QWORD 10.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l3
+		mov rdi, QWORD 1.0
+		freturn
+		ret
+	.l3:
+	mov rdi, QWORD 0x7FF0000000000000
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l4
+		mov rdi, QWORD 0x7FF0000000000000
+		freturn
+		ret
+	.l4:
+	mov rdi, QWORD 0.0
+	vlist_set 1
+	jmp .l6
+	.l5:
+		mov rdi, QWORD 10.0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		divsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 0
+		mov rdi, QWORD 1.0
+		push rdi
+		vlist_get rdi, 1
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		addsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 1
+	.l6:
+		mov rdi, QWORD 1.0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		comisd xmm0, xmm1
+		setnb al
+		movzx rdi, al
+		cmp rdi, 1
+		je .l5
+	.l7:
+	jmp .l9
+	.l8:
+		mov rdi, QWORD 10.0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		mulsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 0
+		mov rdi, QWORD 1.0
+		push rdi
+		vlist_get rdi, 1
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		subsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 1
+	.l9:
+		mov rdi, QWORD 0.316227766016837
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		comisd xmm1, xmm0
+		setnb al
+		movzx rdi, al
+		cmp rdi, 1
+		je .l8
+	.l10:
+	mov rdi, QWORD 1.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	addsd xmm0, xmm1
+	movq rdi, xmm0
+	push rdi
+	mov rdi, QWORD 1.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	subsd xmm0, xmm1
+	movq rdi, xmm0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	divsd xmm0, xmm1
+	movq rdi, xmm0
+	vlist_set 2
+	vlist_get rdi, 2
+	vlist_set 3
+		mov rdi, QWORD 3
+		vlist_set 4
+		jmp .l12
+		.l11:
+			vlist_get rdi, 4
+			mov QWORD [fptmp], rdi
+			cvtsi2sd xmm0, QWORD [fptmp]
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 2
+			vlist_set 5
+			push rax
+			vlist_get rdi, 4
+			vlist_set 6
+			push rax
+			pop rcx
+			pop rdx
+			call f_Math$powInt
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			divsd xmm0, xmm1
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 3
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			addsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 3
+		.l14:
+			vlist_get rdi, 4
+			push rdi
+			mov rdi, QWORD 2
+			pop rsi
+			add rdi, rsi
+			vlist_set 4
+		.l12:
+			mov rdi, QWORD 23
+			push rdi
+			vlist_get rdi, 4
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 1
+			je .l11
+		.l13:
+	mov rdi, QWORD 2.0
+	push rdi
+	vlist_get rdi, 3
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	mulsd xmm0, xmm1
+	movq rdi, xmm0
+	vlist_set 3
+	vlist_get rdi, 1
+	push rdi
+	mov rdi, QWORD [c_Math$LOG10_E]
+	push rdi
+	vlist_get rdi, 3
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	mulsd xmm0, xmm1
+	movq rdi, xmm0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	addsd xmm0, xmm1
+	movq rdi, xmm0
+	freturn
+	ret
+
+;@FUNC,Math$ln,dec,dec
+f_Math$ln:
+	fstart 16
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [c_Math$LOG10_E]
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 1
+	push rax
+	pop rdx
+	call f_Math$log10
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	divsd xmm0, xmm1
+	movq rdi, xmm0
+	freturn
+	ret
+
+;@FUNC,Math$log,dec,dec,dec
+f_Math$log:
+	fstart 32
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 1
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	setnb al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0xFFF8000000000000
+		freturn
+		ret
+	.l0:
+	vlist_get rdi, 1
+	vlist_set 2
+	push rax
+	pop rdx
+	call f_Math$log10
+	push rdi
+	vlist_get rdi, 0
+	vlist_set 3
+	push rax
+	pop rdx
+	call f_Math$log10
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	divsd xmm0, xmm1
+	movq rdi, xmm0
+	freturn
+	ret
+
+;@FUNC,Math$exp,dec,dec
+f_Math$exp:
+	fstart 72
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD 0xFFF0000000000000
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD 0.0
+		freturn
+		ret
+	.l0:
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l1
+		mov rdi, QWORD 1.0
+		freturn
+		ret
+	.l1:
+	mov rdi, QWORD 0x7FF0000000000000
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	ucomisd xmm0, xmm1
+	setnp al
+	mov rdx, 0
+	cmovne rax, rdx
+	movzx rdi, al
+	cmp rdi, 0
+	je .l2
+		mov rdi, QWORD 0x7FF0000000000000
+		freturn
+		ret
+	.l2:
+	mov rdi, QWORD 0.0
+	push rdi
+	vlist_get rdi, 0
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	comisd xmm1, xmm0
+	seta al
+	movzx rdi, al
+	vlist_set 1
+	vlist_get rdi, 1
+	cmp rdi, 0
+	je .l3
+		vlist_get rdi, 0
+		xorpd xmm0, xmm0
+		movq xmm1, rdi
+		subsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 0
+	.l3:
+	mov rdi, QWORD 1.0
+	vlist_set 2
+	jmp .l5
+	.l4:
+		mov rdi, QWORD 1.0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		subsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 0
+		mov rdi, QWORD [c_Math$E]
+		push rdi
+		vlist_get rdi, 2
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		mulsd xmm0, xmm1
+		movq rdi, xmm0
+		vlist_set 2
+	.l5:
+		mov rdi, QWORD 2.0
+		push rdi
+		vlist_get rdi, 0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		comisd xmm0, xmm1
+		seta al
+		movzx rdi, al
+		cmp rdi, 1
+		je .l4
+	.l6:
+	mov rdi, QWORD 1.0
+	vlist_set 3
+	mov rdi, QWORD 1
+	vlist_set 4
+		mov rdi, QWORD 1
+		vlist_set 5
+		jmp .l8
+		.l7:
+			vlist_get rdi, 5
+			push rdi
+			vlist_get rdi, 4
+			pop rsi
+			imul rdi, rsi
+			vlist_set 4
+			vlist_get rdi, 4
+			mov QWORD [fptmp], rdi
+			cvtsi2sd xmm0, QWORD [fptmp]
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 0
+			vlist_set 6
+			push rax
+			vlist_get rdi, 5
+			vlist_set 7
+			push rax
+			pop rcx
+			pop rdx
+			call f_Math$powInt
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			divsd xmm0, xmm1
+			movq rdi, xmm0
+			push rdi
+			vlist_get rdi, 3
+			pop rsi
+			movq xmm0, rdi
+			movq xmm1, rsi
+			addsd xmm0, xmm1
+			movq rdi, xmm0
+			vlist_set 3
+		.l10:
+			vlist_get rdi, 5
+			inc rdi
+			vlist_set 5
+		.l8:
+			mov rdi, QWORD 23
+			push rdi
+			vlist_get rdi, 5
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 1
+			je .l7
+		.l9:
+	vlist_get rdi, 2
+	push rdi
+	vlist_get rdi, 3
+	pop rsi
+	movq xmm0, rdi
+	movq xmm1, rsi
+	mulsd xmm0, xmm1
+	movq rdi, xmm0
+	vlist_set 8
+	vlist_get rdi, 1
+	cmp rdi, 0
+	je .l11
+		vlist_get rdi, 8
+		push rdi
+		mov rdi, QWORD 1.0
+		pop rsi
+		movq xmm0, rdi
+		movq xmm1, rsi
+		divsd xmm0, xmm1
+		movq rdi, xmm0
+		freturn
+		ret
+		jmp .l12
+	.l11:
+		vlist_get rdi, 8
+		freturn
+		ret
+	.l12:
+
+;@SEG_READ
+
+
+;@CONST,Math$LOG10_E,dec
+c_Math$LOG10_E dq 0.434294481903251
+;@CONST,Math$E,dec
+c_Math$E dq 2.718281828459045
+;@CONST,Math$PI,dec
+c_Math$PI dq 3.141592653589793

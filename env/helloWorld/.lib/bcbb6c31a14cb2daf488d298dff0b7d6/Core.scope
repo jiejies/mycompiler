@@ -1,0 +1,184 @@
+import "LowLevel/Floats";
+import "LowLevel/Limits";
+import "Math/Rounding";
+import "Math/Core";
+
+using Math;
+using LowLevel;
+
+/%
+@noalloc: This function does not use string concatenation.
+
+Prints @"s" into `stdout` along with a new-line.
+%/
+func void println(str s) {
+	print(s);
+	print("\n");
+}
+
+/%
+@asm
+
+Returns the user input from `stdin` until a new line. 
+The new line is not included in the final string.
+
+The program will pause until the user finishes the input.
+%/
+func str input() {
+	str o = "";
+	assembly {
+		call input
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Stops the program for @"time" seconds.
+@"time" will be clamped between 0 and @"INT_MAX".
+%/
+func void sleep(dec time) {
+	// Special cases
+
+	if (time <= 0.0) {
+		ret;
+	}
+
+	if (time > INT_MAX -> dec) {
+		time = INT_MAX -> dec;
+	}
+	
+	// Convert input to seconds and nanoseconds
+	
+	dec rounded = floor(time);
+	int seconds = rounded -> int;
+	int nano = ((time - rounded) * 1'000'000'000.0) -> int;
+	
+	// Call syscall
+
+	assembly {
+		vlist_get rdi, $seconds$
+		vlist_get rsi, $nano$
+		call sleep
+	}
+}
+
+/%
+Converts @"b" into a string.
+
+Returns `"true"` or `"false"`.
+%/
+func str boolToStr(bool b) {
+	if (b) {
+		ret "true";
+	}
+	ret "false";
+}
+
+/%
+Converts integer @"num" into a string.
+
+Returns the number in a basic format without any commas.
+Prepends a `-` if negative.
+%/
+func str intToStr(int num) {
+	// If we don't do this, this will return ""
+	if (num == 0) {
+		ret "0";
+	}
+	
+	str out = "";
+	bool neg = num < 0;
+	
+	// Deal with negatives
+	if (neg) {
+		num = -num;
+	}
+	
+	// Add digits (in reverse order)
+	while (num > 0) {
+		out = "0123456789"[num % 10] + out;
+		num /= 10;
+	}
+	
+	// Add negative sign (if negative)
+	if (neg) {
+		out = "-" + out;
+	}
+	
+	ret out;
+}
+
+/%
+Converts decimal @"num" into a string.
+
+Returns the number a normal decimal format *or* scientific notation.
+Prepends a `-` if negative.
+%/
+func str decToStr(dec num) {
+	// Special cases
+	
+	if (num == 0.0) {
+		ret "0.0";
+	}
+	
+	if (num == infinity) {
+		ret "infinity";
+	}
+	
+	if (num == -infinity) {
+		ret "-infinity";
+	}
+	
+	// Normal cases
+	
+	// Deal with negatives
+	bool neg = num < 0.0;
+	if (neg) {
+		num = -num;
+	}
+	
+	int exponent = exponentPart(num) - 1023;
+	
+	str out = "NaN";
+	if (exponent < 39 & exponent > -21) { // The limit for a normal decimal representation
+		// Seperate the whole and decimal part
+		dec wholePart = floor(num);
+		dec decimalPart = num - wholePart;
+		
+		str whole = intToStr(wholePart -> int);
+		str decimal = intToStr((decimalPart * 1'000'000.0) -> int);
+		
+		// Pad with zeros on left
+		while (decimal.length < 6) {
+			decimal = "0" + decimal;
+		}
+		
+		out = whole + "." + decimal;
+	} else if (exponent != 1024) { // Represent in scientific notation
+		dec realMantissa = mantissaPartAsDec(num);
+		
+		// Convert the base 2 scientific to base 10
+		// x * 2 ^ y -> x * 10 ^ y
+		
+		// ln(2) / ln(10) = 0.301029995663981
+		// Also add a little bit for floating point inaccuracy
+		dec result =
+			log10(realMantissa) +
+			exponent -> dec * 0.301029995663981 +
+			0.0000000000001;
+		
+		dec newExponent = floor(result);
+		dec newMantissa = pow(10.0, result - newExponent);
+		
+		out = decToStr(newMantissa) + " * 10 ^ " + intToStr(newExponent -> int);
+	}
+	
+	if (neg) {
+		out = "-" + out;
+	}
+	
+	ret out;
+}

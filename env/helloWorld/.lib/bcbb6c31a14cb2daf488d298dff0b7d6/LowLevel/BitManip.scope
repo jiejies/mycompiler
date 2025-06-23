@@ -1,0 +1,157 @@
+namespace LowLevel;
+
+/%
+Converts @"num" into a 64 character binary number.
+
+`3354674` -> `00000000000000000000000000000000000000000001100110011000000110010`
+%/
+func str toBin(int num) {
+	str out = "";
+	for (int i : 0..65) {
+		int v = nthBit(i, num);
+
+		// Insert 0 or 1
+		if (v == 0) {
+			out = "0" + out;
+		} else {
+			out = "1" + out;
+		}
+	}
+	ret out;
+}
+
+/%
+@asm
+
+Converts the bits of @"a" into a decimal number.
+
+No type conversion is done. Use casting if you intend on the numerical values matching.
+%/
+func dec rawCastIntToDec(int a) {
+	dec o = 0.0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Converts the bits of @"a" into a integer.
+
+No type conversion is done. Use casting if you intend on the numerical values matching.
+%/
+func int rawCastDecToInt(dec a) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+Returns the @"n"th bit of @"a".
+%/
+func int nthBit(int n, int a) {
+	ret and(shr(a, n), 1);
+}
+
+/%
+@asm
+
+Returns the bitwise and of @"a" and @"b".
+%/
+func int and(int a, int b) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_get rsi, $b$
+		and rdi, rsi
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Returns the bitwise or of @"a" and @"b".
+%/
+func int or(int a, int b) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_get rsi, $b$
+		and rdi, rsi
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Returns the bitwise xor of @"a" and @"b".
+%/
+func int xor(int a, int b) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_get rsi, $b$
+		and rdi, rsi
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Returns the bitwise not of @"a".
+%/
+func int not(int a) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		not rdi
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Returns @"a" bit-shifted to the left by @"b".
+@"b" gets down casted into a 8-bit number (0-255). Upper bits are ignored.
+%/
+func int shl(int a, int b) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_get rcx, $b$
+		shl rdi, cl
+		vlist_set $o$
+	}
+	ret o;
+}
+
+/%
+@asm
+
+Returns @"a" bit-shifted to the right by @"b".
+@"b" gets down casted into a 8-bit number (0-255). Upper bits are ignored.
+%/
+func int shr(int a, int b) {
+	int o = 0;
+	assembly {
+		vlist_get rdi, $a$
+		vlist_get rcx, $b$
+		shr rdi, cl
+		vlist_set $o$
+	}
+	ret o;
+}

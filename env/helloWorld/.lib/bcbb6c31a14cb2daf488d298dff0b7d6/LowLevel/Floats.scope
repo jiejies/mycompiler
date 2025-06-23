@@ -1,0 +1,51 @@
+import "LowLevel/BitManip";
+
+namespace LowLevel;
+
+/%
+Returns the exponent of @"d" as a raw int.
+%/
+func int exponentPart(dec d) {
+	ret and(shr(rawCastDecToInt(d), 52), 2'047);
+}
+
+/%
+Returns the mantissa of @"d" as a **raw int**.
+See @"mantissaPartAsDec" for a more usable value.
+
+@"mantissaPart"(12.3456) -> `2446355317587653`
+@"mantissaPartAsDec"(12.3456) -> `1.5432`
+%/
+func int mantissaPart(dec d) {
+	ret and(rawCastDecToInt(d), 4'503'599'627'370'495);
+}
+
+/%
+Returns the mantissa of @"d" as a decimal.
+
+@"mantissaPart"(12.3456) -> `2446355317587653`
+@"mantissaPartAsDec"(12.3456) -> `1.5432`
+%/
+func dec mantissaPartAsDec(dec d) {
+	int exponent = exponentPart(d);
+	int mantissa = mantissaPart(d);
+
+	// Convert to binary w/ decimal-point
+	// Mantissa is only 52 binary digits long
+	dec out = 0.0;
+	int divisor = 1;
+	for (int i : 0..52) {
+		// 2.0 ^ -i
+		dec place = 1.0 / divisor -> dec;
+		divisor *= 2;
+		
+		out += nthBit(52 - i, mantissa) -> dec * place;
+	}
+	
+	// Check for denormalized
+	if (exponent == 0) {
+		ret out;
+	} else {
+		ret 1.0 + out;
+	}
+}

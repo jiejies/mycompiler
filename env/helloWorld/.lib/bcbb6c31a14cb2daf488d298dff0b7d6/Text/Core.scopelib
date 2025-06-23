@@ -1,0 +1,73 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,71e136145055fe7934254843cc09d1ef,Text/Core.scope
+
+;@SEG_CODE
+;@FUNC,Text$indexOfChar,int,str,str
+f_Text$indexOfChar:
+	fstart 24
+	mov rdi, QWORD [rdx]
+	vlist_set 0
+	mov rdi, QWORD [rcx]
+	vlist_set 1
+	mov rdi, QWORD 1
+	push rdi
+	vlist_get rdi, 1
+	mov rdi, QWORD [rdi]
+	pop rsi
+	cmp rdi, rsi
+	setne al
+	movzx rdi, al
+	cmp rdi, 0
+	je .l0
+		mov rdi, QWORD -1
+		freturn
+		ret
+	.l0:
+		mov rdi, QWORD 0
+		vlist_set 2
+		jmp .l2
+		.l1:
+			vlist_get rdi, 1
+			push rdi
+			vlist_get rdi, 2
+			push rdi
+			vlist_get rdi, 0
+			pop rsi
+			add rdi, rsi
+			mov al, BYTE [rdi + 16]
+			mov rdi, QWORD [curpkg]
+			mov QWORD [rdi], 1
+			mov BYTE [rdi + 16], al
+			add QWORD [curpkg], 17
+			pop rsi
+			call streq
+			cmp rdi, 0
+			je .l5
+				vlist_get rdi, 2
+				freturn
+				ret
+			.l5:
+		.l4:
+			vlist_get rdi, 2
+			inc rdi
+			vlist_set 2
+		.l2:
+			vlist_get rdi, 0
+			mov rdi, QWORD [rdi]
+			push rdi
+			vlist_get rdi, 2
+			pop rsi
+			cmp rdi, rsi
+			setl al
+			movzx rdi, al
+			cmp rdi, 1
+			je .l1
+		.l3:
+	mov rdi, QWORD -1
+	freturn
+	ret
+
+;@SEG_READ
+
+

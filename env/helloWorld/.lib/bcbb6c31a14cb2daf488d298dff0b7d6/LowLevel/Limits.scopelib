@@ -1,0 +1,12 @@
+; Generated at 2022/12/07 01:58:04 PM
+
+;@FILE,LIB,0e88560449be6fbdd7da2d39ec0bdc33,LowLevel/Limits.scope
+
+;@SEG_CODE
+;@SEG_READ
+
+
+;@CONST,LowLevel$INT_MIN,int
+c_LowLevel$INT_MIN dq -9223372036854775808
+;@CONST,LowLevel$INT_MAX,int
+c_LowLevel$INT_MAX dq 9223372036854775807

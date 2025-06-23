@@ -1,0 +1,49 @@
+import "LowLevel/Floats";
+
+namespace Math;
+
+using LowLevel;
+
+/%
+Rounds @"input" **down** to the nearest whole.
+
+`5.9` -> `5.0`
+`-86.1` -> `-86.0`
+`1.0` -> `1.0`
+`34.5` -> `34.0`
+%/
+func dec floor(dec input) {
+	// Floating point magic!
+	int asInt = rawCastDecToInt(input);
+	int exponent = exponentPart(input) - 1023;
+	if (exponent < 52) {
+		if (exponent < 0) {
+			// Return 0 * sign(input) if |input| < 1
+			if (asInt > -1) {
+				asInt = 0;
+			} else if (and(asInt, 9'223'372'036'854'775'807) != 0) { 
+				asInt = -4'616'189'618'054'758'400;
+			}
+		} else {
+			int i = shr(4'503'599'627'370'495, exponent);
+
+			if (and(asInt, i) == 0) { 
+				ret input;
+			}
+			
+			if (asInt < 0) {
+				// input is integral
+				asInt += shr(4'503'599'627'370'496, exponent);
+			}
+			
+			asInt = and(asInt, not(i));
+		}
+		
+		input = rawCastIntToDec(asInt);
+	} else {
+		// inf or NaN
+		ret input + input;
+	}
+	
+	ret input;
+}
