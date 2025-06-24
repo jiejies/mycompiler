@@ -1,0 +1,27 @@
+; Generated at 2025/06/24 09:41:46 AM
+
+;@FILE,LIB,5572b2608986871b3646ef478a6df0eb,Core.scope
+;@IMPORT,c00d5113a2513e82ce3fcc027314b762,Other.scope
+
+;@SEG_CODE
+;@FUNC,getHelloWorld,str
+f_getHelloWorld:
+	fstart 0
+	lea rdi, [s_5572b2608986871b3646ef478a6df0eb_0]
+	freturn
+	ret
+
+;@FUNC,printHelloWorld,void
+f_printHelloWorld:
+	fstart 0
+	call f_getHelloWorld
+	call print
+	call f_printNewLine
+	freturn
+	ret
+
+;@SEG_READ
+
+s_5572b2608986871b3646ef478a6df0eb_0 dq 13, 0
+	db 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33
+

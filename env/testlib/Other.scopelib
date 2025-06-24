@@ -1,0 +1,18 @@
+; Generated at 2025/06/24 09:41:46 AM
+
+;@FILE,LIB,c00d5113a2513e82ce3fcc027314b762,Other.scope
+
+;@SEG_CODE
+;@FUNC,printNewLine,void
+f_printNewLine:
+	fstart 0
+	lea rdi, [s_c00d5113a2513e82ce3fcc027314b762_0]
+	call print
+	freturn
+	ret
+
+;@SEG_READ
+
+s_c00d5113a2513e82ce3fcc027314b762_0 dq 1, 0
+	db 10
+

@@ -1,0 +1,8 @@
+
+
+func void main() {
+	int x=0;
+    int y=1;
+    print(");
+	print("a testerror\n");
+}

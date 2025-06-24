@@ -1,0 +1,265 @@
+; Generated at 2025/06/24 11:28:47 AM
+
+;@FILE,ELF64,928a30d588498b939061b8867e451b58,Test.scope
+format ELF64 executable 3
+use64
+
+PACKAGE_SIZE = 50 * 1024 * 1024 
+VLIST_SIZE = 8 * 1024 
+
+macro vlist_get reg, index {
+	mov reg, QWORD [vlist]
+	mov reg, QWORD [reg + index * 8]
+}
+
+macro vlist_set index {
+	mov rax, QWORD [vlist]
+	lea rax, [rax + index * 8]
+	mov [rax], rdi
+}
+
+macro fstart shift {
+	push QWORD [vlist_end]
+	push QWORD [vlist]
+	mov rax, QWORD [vlist_end]
+	mov QWORD [vlist], rax
+	add QWORD [vlist_end], shift
+}
+
+macro freturn {
+	pop rax
+	mov QWORD [vlist], rax
+	pop rax
+	mov QWORD [vlist_end], rax
+}
+
+macro push [i] { push i }
+macro pop  [i] { pop  i }
+
+segment readable writable
+
+vlist_start rb VLIST_SIZE
+vlist rb 8
+vlist_end rb 8
+
+fptmp rb 8
+
+curpkg rb 8
+
+segment readable executable
+entry f_main
+
+init:
+	lea rax, [vlist_start]
+	mov QWORD [vlist], rax
+	mov QWORD [vlist_end], rax
+	call package_create
+	mov QWORD [curpkg], rax
+	ret
+
+exit:
+	mov rax, 60 
+	syscall
+	ret
+
+print:
+	push rcx, rdx, rsi, rdi
+	mov rdx, QWORD [rdi] 
+	lea rsi, [rdi + 16]  
+	mov rdi, 1           
+	mov rax, 1           
+	syscall
+	pop rdi, rsi, rdx, rcx
+	ret
+
+input:
+	push rcx, rdx, rsi
+	mov rsi, QWORD [curpkg]
+	add rsi, 16
+	mov rax, 0
+	.l: 
+		push rax
+		mov rdx, 1 
+		mov rdi, 0 
+		mov rax, 0 
+		syscall
+		pop rax
+		inc rax 
+		inc rsi 
+		cmp BYTE [rsi - 1], 0x0A
+		jne .l
+	mov BYTE [rsi - 1], 0 
+	dec rax
+	mov rdi, QWORD [curpkg]
+	mov QWORD [rdi], rax
+	add QWORD [curpkg], 16
+	add QWORD [curpkg], rax
+	pop rsi, rdx, rcx
+	ret
+
+sleep:
+	push rsi, rdi
+	
+	mov rax, QWORD [curpkg]
+	mov QWORD [rax], rdi
+	mov QWORD [rax + 8], rsi
+	
+	mov rsi, 0              
+	mov rdi, QWORD [curpkg] 
+	mov rax, 35             
+	syscall
+	
+	mov rax, QWORD [curpkg]
+	mov QWORD [rax], 0
+	mov QWORD [rax + 8], 0
+	
+	pop rdi, rsi
+	ret
+
+copy:
+	cmp rdx, 0
+	je .e
+	push rsi, rdi, rdx
+	add rdx, rdi
+	inc rdx
+	.l:
+		mov al, BYTE [rdi]
+		mov BYTE [rsi], al
+		inc rdi
+		inc rsi
+		cmp rdi, rdx
+		jl .l
+	pop rdx, rdi, rsi
+	.e:
+	ret
+
+concat:
+	push rax, rsi, rdx
+	
+	mov rdx, QWORD [rdi]
+	add rdx, QWORD [rsi]
+	
+	mov rax, QWORD [curpkg]
+	push rax
+	mov QWORD [rax], rdx
+	add rax, 8
+	
+	lea rdx, [rdi + 8]
+	mov rdx, QWORD [rdx]
+	mov QWORD [rax], rdx
+	add QWORD [curpkg], 16
+	
+	mov rdx, QWORD [rdi]
+	push rsi
+	add rdi, 16
+	mov rsi, QWORD [curpkg]
+	call copy
+	add QWORD [curpkg], rdx
+	
+	pop rdi
+	mov rdx, QWORD [rdi]
+	add rdi, 16
+	mov rsi, QWORD [curpkg]
+	call copy
+	add QWORD [curpkg], rdx
+	
+	pop rdi
+	pop rdx, rsi, rax
+	ret
+
+streq:
+	push rcx
+	mov rcx, QWORD [rdi]
+	cmp rcx, QWORD [rsi]
+	jne .e
+	mov rax, QWORD [rdi]
+	add rdi, 16
+	add rsi, 16
+	.l:
+		mov cl, BYTE [rdi]
+		cmp cl, BYTE [rsi]
+		jne .e
+		inc rdi
+		inc rsi
+		dec rax
+		cmp rax, 1
+		jg .l
+		mov rdi, 1
+		pop rcx
+		ret
+	.e:
+	mov rdi, 0
+	pop rcx
+	ret
+
+package_create:
+	push rcx, rdi, rsi, rdx, r10, r8, r9
+	xor rdi, rdi
+	mov rsi, PACKAGE_SIZE 
+	mov rdx, 0x02 
+	mov r10, 0x22 
+	mov r8, -1 
+	xor r9, r9 
+	mov rax, 9 
+	syscall
+	pop r9, r8, r10, rdx, rsi, rdi, rcx
+	ret
+
+package_delete:
+	push rcx, rsi
+	mov rsi, PACKAGE_SIZE 
+	mov rax, 11 
+	syscall
+	pop rsi, rcx
+	ret
+
+
+;@FUNC,getHelloWorld,str
+f_getHelloWorld:
+	fstart 0
+	lea rdi, [s_5572b2608986871b3646ef478a6df0eb_0]
+	freturn
+	ret
+
+;@FUNC,printHelloWorld,void
+f_printHelloWorld:
+	fstart 0
+	call f_getHelloWorld
+	call print
+	call f_printNewLine
+	freturn
+	ret
+
+
+
+;@FUNC,printNewLine,void
+f_printNewLine:
+	fstart 0
+	lea rdi, [s_c00d5113a2513e82ce3fcc027314b762_0]
+	call print
+	freturn
+	ret
+
+
+;@FUNC,main,void
+f_main:
+	call init
+	fstart 0
+	call f_printHelloWorld
+	lea rdi, [s_928a30d588498b939061b8867e451b58_0]
+	call print
+	freturn
+	mov rdi, 0
+	call exit
+	ret
+
+segment readable
+
+s_empty dq 0, 0
+s_928a30d588498b939061b8867e451b58_0 dq 29, 0
+	db 65, 98, 111, 118, 101, 32, 119, 97, 115, 32, 110, 111, 116, 32, 105, 110, 32, 116, 104, 105, 115, 32, 102, 105, 108, 101, 33, 33, 10
+s_5572b2608986871b3646ef478a6df0eb_0 dq 13, 0
+	db 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33
+s_c00d5113a2513e82ce3fcc027314b762_0 dq 1, 0
+	db 10
+

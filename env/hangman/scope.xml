@@ -1,5 +1,4 @@
 <scope>
 	<mode>project</mode>
 	<main>Hangman.scope</main>
-	<library type="github">ScopeLang/stdlib</library>
 </scope>
